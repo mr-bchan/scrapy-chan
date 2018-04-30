@@ -9,8 +9,8 @@ Sites to scrape:
 
 Data format:
 
-[1] id - unique post identifier
-[2] source - entertainment/news
-[3] texts - list of texts 
-[4] images - list of images
-[5] videos - list of videos
+[1] id - unique post identifier <br>
+[2] source - entertainment/news <br>
+[3] texts - list of texts  <br>
+[4] images - list of images <br>
+[5] videos - list of videos <br>
