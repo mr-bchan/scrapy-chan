@@ -7,7 +7,7 @@ Sites to scrape:
 [1] https://news.abs-cbn.com/entertainment <br>
 [2] http://news.abs-cbn.com/News
 
-<b> Data format:
+<b> Data format: </b>
 <br>
 url - article URL <br>
 story - article story <br>
