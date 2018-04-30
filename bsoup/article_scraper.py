@@ -1,14 +1,16 @@
 import requests
 from bs4 import BeautifulSoup
 import unicodedata
+import json
+
+output_articles = []
 
 def read_article_list(URL):
 
+    print('Reading Article List from: {}'.format(URL))
     page = requests.get(URL)
     soup = BeautifulSoup(page.content, 'html.parser')
     articles = soup.find_all('article', class_='clearfix')
-
-    output_articles = []
 
     for article in articles:
 
@@ -39,12 +41,24 @@ def read_article_list(URL):
 
         output_articles.append(formatted_article)
 
-    print('Number of articles scraped: ' + str(len(output_articles)))
-    return output_articles
+    next_url = soup.find('a', {'title':'Next'})
+
+    if next_url:
+        read_article_list(URL.rsplit('/',1)[0] + next_url['href'])
+    else:
+        print('Number of articles scraped: ' + str(len(output_articles)))
+        print(output_articles)
+
+        with open('sample_data.json', 'w') as file:
+            json.dump(output_articles, file)
+
+        return output_articles
 
 def read_article(URL):
 
     try:
+
+        output = {}
         print('Getting story for {}'.format(URL))
 
         page = requests.get(URL)
@@ -52,27 +66,23 @@ def read_article(URL):
 
         content = soup.find('div', {'class':'article-content', 'itemprop':'articleBody'})
         tags = soup.find('div', {'class':'article-metakey'})
+        output['tags'] = [encode(tag.getText()) for tag in tags.findAll('a')]
 
         if content is None:
             content = soup.find('div', {'class':'slider-for'})
 
-        output = {}
         output['videos'] = [tag['src'] for tag in content.findAll('iframe')]
         output['images'] = [tag['src'] for tag in content.findAll('img')]
         output['media'] = [tag['data-instgrm-permalink'] for tag in content.findAll('blockquote', {'class':'instagram-media'})]
 
         output['text'] = encode(content.getText())
         output['url'] = URL
-        output['tags'] = [encode(tag.getText()) for tag in tags.findAll('a')]
 
     except Exception as e:
         print(e)
-        output['url'] = URL
-        output = {}
         output['videos'] = []
         output['images'] = []
         output['text'] = ""
-        output['tags'] = []
         output['media'] = []
 
 
