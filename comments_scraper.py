@@ -25,10 +25,15 @@ def scrape_comments(posts, ACCESS_TOKEN):
               '?fields=comments.limit(100){id,created_time, message, like_count, comments.limit(100), comment_count}' \
               '&access_token='+ACCESS_TOKEN
 
-        comment_list = get_comments(URL)['data']['comments']['data']
+        comment_list = get_comments(URL)['data']
+
+        if 'comments' in comment_list:
+            comment_list = comment_list['comments']['data']
+        else:
+            comment_list = []
 
         print(comment_list)
-        
+
         comments = comments + comment_list
 
     return comments
