@@ -11,8 +11,7 @@ import time
 
 def read_posts(url, source):
     print('URL: {}'.format(url))
-    content = requests.get(url).content
-    content = json.loads(content)
+    content = requests.get(url).json()
 
     if 'posts' in content:
         posts = content['posts']['data']
