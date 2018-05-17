@@ -15,13 +15,16 @@ def read_posts(url, source):
 
     if 'posts' in content:
         posts = content['posts']['data']
-        next_url = content['posts']['paging']['next']
+
+        try: next_url = content['posts']['paging']['next']
+        except Exception: next_url = ''
+
     else:
         posts = content['data']
-        next_url = content['paging']['next']
+        try: next_url = content['paging']['next']
+        except Exception: next_url = ''
 
     data = []
-
     for post in posts:
 
         try:
@@ -40,7 +43,6 @@ def read_posts(url, source):
             article['shares'] = post['shares']['count']
         except Exception:
             article['shares'] = 0
-
 
 
         try:
@@ -78,7 +80,6 @@ def scrape_page(FACEBOOK_PAGE_ID, ACCESS_TOKEN):
           '?fields=posts.limit(100)' \
           '{id,created_time,message,attachments,link,permalink_url,shares,%20status_type,%20comments.limit(0).summary(true),reactions.type(LIKE).summary(total_count).as(like),reactions.type(LOVE).summary(total_count).as(love),reactions.type(HAHA).summary(total_count).as(haha),reactions.type(WOW).summary(total_count).as(wow),reactions.type(SAD).summary(total_count).as(sad),reactions.type(ANGRY).summary(total_count).as(angry)}&access_token=' + ACCESS_TOKEN + '&pretty=0;'
 
-    articles = []
 
     data = read_posts(URL, FACEBOOK_PAGE_ID)
     print(data)
@@ -86,7 +87,7 @@ def scrape_page(FACEBOOK_PAGE_ID, ACCESS_TOKEN):
     articles = data['data']
     next_link = data['next']
 
-    while next_link:
+    while next_link != '':
         data = read_posts(next_link, FACEBOOK_PAGE_ID)
         print(data)
         articles = articles + data['data']
