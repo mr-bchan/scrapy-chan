@@ -19,10 +19,12 @@ def read_posts(url, source):
         try: next_url = content['posts']['paging']['next']
         except Exception: next_url = ''
 
-    else:
+    elif 'data in content':
         posts = content['data']
         try: next_url = content['paging']['next']
         except Exception: next_url = ''
+    else:
+        return {'data': [], 'next': ''}
 
     data = []
     for post in posts:
@@ -71,6 +73,8 @@ def read_posts(url, source):
         article['tag'] = ['@' + source]
 
         data.append(article)
+
+
 
     return {'data':data, 'next':next_url}
 
