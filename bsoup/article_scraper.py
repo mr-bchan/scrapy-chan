@@ -71,6 +71,9 @@ def read_article(URL):
         if content is None:
             content = soup.find('div', {'class':'slider-for'})
 
+        if content is None:
+            content = soup.find('div', {'class':'media-block'})
+
         output['videos'] = [tag['src'] for tag in content.findAll('iframe')]
         output['images'] = [tag['src'] for tag in content.findAll('img')]
         output['media'] = [tag['data-instgrm-permalink'] for tag in content.findAll('blockquote', {'class':'instagram-media'})]
@@ -84,6 +87,7 @@ def read_article(URL):
         output['images'] = []
         output['text'] = ""
         output['media'] = []
+        output['tags'] = []
 
 
     return output
