@@ -19,10 +19,12 @@ def read_posts(url, source):
         try: next_url = content['posts']['paging']['next']
         except Exception: next_url = ''
 
-    elif 'data in content':
+    elif 'data' in content:
         posts = content['data']
+
         try: next_url = content['paging']['next']
         except Exception: next_url = ''
+
     else:
         return {'data': [], 'next': ''}
 
@@ -70,7 +72,7 @@ def read_posts(url, source):
         # article['full_text'] = scraped_data['text']
 
         # Add news source
-        article['tag'] = ['@' + source]
+        article['source'] = source
 
         data.append(article)
 
