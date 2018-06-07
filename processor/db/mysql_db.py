@@ -32,7 +32,6 @@ class Database:
 
             # Ping to establish new conection
             self.conn.ping(True)
-            self.cursor = self.conn.cursor()
             self.insert_row(query, on_duplicate_keys)
 
     def query_row(self, query):
@@ -58,7 +57,6 @@ class Database:
            print('Error encountered')
            print(e)
            self.conn.ping(True)
-           self.cursor = self.conn.cursor()
            self.query_row(query)
 
     # Query to insert facebook posts
