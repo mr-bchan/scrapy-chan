@@ -2,11 +2,15 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*_config.py
+.pytest_cache/
 
 # C extensions
 *.so
 
 # Distribution / packaging
+.idea/
+.DS_Store
 .Python
 env/
 build/

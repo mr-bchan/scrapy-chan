@@ -3,15 +3,20 @@
 # @ FACEBOOK_PAGE_ID
 # @ ACCESS TOKEN - valid and not expired
 
-from bsoup import article_scraper as scraper
+# from bsoup import article_scraper as scraper
 import requests
 import json
 import datetime
-import time
+import data_sources
+import processor.db.helper as helper
 
 def read_posts(url, source):
-    print('URL: {}'.format(url))
-    content = requests.get(url).json()
+
+    try:
+        print('URL: {}'.format(url))
+        content = requests.get(url,verify=False).json()
+    except Exception:
+        return {'data': [], 'next': ''}
 
     if 'posts' in content:
         posts = content['posts']['data']
@@ -32,6 +37,9 @@ def read_posts(url, source):
     for post in posts:
 
         try:
+            if post['created_time'][:4] != '2018':
+                return {'data': data, 'next': ''}
+
             article = {'id': post['id'],
                        'timestamp': post['created_time'],
                        'summary': post['message'],
@@ -74,8 +82,7 @@ def read_posts(url, source):
         # Add news source
         article['source'] = source
 
-        data.append(article)
-
+        helper.insert_facebook_post(article)
 
 
     return {'data':data, 'next':next_url}
@@ -90,26 +97,22 @@ def scrape_page(FACEBOOK_PAGE_ID, ACCESS_TOKEN):
     data = read_posts(URL, FACEBOOK_PAGE_ID)
     print(data)
 
+    import time
+
     articles = data['data']
     next_link = data['next']
 
     while next_link != '':
         data = read_posts(next_link, FACEBOOK_PAGE_ID)
-        print(data)
         articles = articles + data['data']
         next_link = data['next']
-
-    timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M')
-    filename = FACEBOOK_PAGE_ID + '_' + timestamp + '.json'
-
-    with open(filename, 'w') as outfile:
-        json.dump(articles, outfile)
-
+        time.sleep(5)
 
 if __name__ == '__main__':
 
-    FACEBOOK_PAGE_ID = 'abscbnNEWS'
+    facebook_page_ids = data_sources.FACEBOOK_PAGE_IDS
 
-    ACCESS_TOKEN = 'EAAcBQf4DCosBAFsxJiY9S3EsCFzE8CGG6XpZAgspaSn1gsIyykDgJfPTSvewTS7xJB0CfJuZA6Sc04udH8ZBuvct05h33uADUQM5O7FOeBIyVuqTTGZApOR8qFTmkH7LOc2CB1mV7MZBx29qpJq188BdZAiwyZCVaoZD'
+    ACCESS_TOKEN =  'EAAcBQf4DCosBADNJDTHsUy3URx2kZBWb4Y0ftT2MZBHNLKPJxZC3Q0ZCfHW0wCR6dum1Fp3LufQK9ScBFN31tUCDTLORrOTXwOOKbHAtwSOzT6LZByZBvZAcarRwAJUGQCQ6VVvwktmLIL6e5vMd6FeZCtvGYRQSVpEZD'
 
-    scrape_page(FACEBOOK_PAGE_ID, ACCESS_TOKEN)
+    for id in facebook_page_ids:
+        scrape_page(id, ACCESS_TOKEN)

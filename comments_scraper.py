@@ -3,30 +3,34 @@
 # @ FACEBOOK_PAGE_ID
 # @ ACCESS TOKEN - valid and not expired
 
-from bsoup import article_scraper as scraper
+
 import requests
 import json
-import datetime
-import time
+import processor.db.helper as helper
 
 def get_comments(post_id, url):
 
     next_url = url
-    comments = []
 
     while next_url is not '':
         print('URL: {}'.format(next_url))
-        url_content = requests.get(next_url).json()
+
+        try:
+            url_content = requests.get(next_url,verify=False).json()
+        except Exception:
+            next_url = ''
+            continue
+
         # print(content)
 
-        if 'comments' not in url_content and 'data' in url_content:
+        if 'comments' not in url_content and 'data' in url_content and len(url_content['data']) > 0:
             content = url_content
-        elif 'comments' in url_content:
+        elif 'comments' in url_content and len(url_content['comments']['data']) > 0:
             content = url_content['comments']
         else:
             print('No comments found for: {}'.format(post_id))
             print(url_content)
-            return {'data':comments}
+            return
 
         print('Number of comments: ' + str(len(content['data'])))
 
@@ -40,58 +44,52 @@ def get_comments(post_id, url):
             if comment.get('comments'): del comment['comments']
             del comment['id']
 
-            comments.append(comment)
+            helper.insert_facebook_comment(comment)
 
-            if sub_comments:
+            while sub_comments:
                 for sub_comment in sub_comments['data']:
+                    print(sub_comment)
+
                     sub_comment['post_id'] = post_id
                     sub_comment['comment_id'] = sub_comment['id']
                     sub_comment['parent_comment_id'] = comment['comment_id']
-                    del sub_comment['id']
-                    comments.append(sub_comment)
+                    helper.insert_facebook_comment(sub_comment)
+
+                # Loop through the next subcomments
+                if 'next' in sub_comments['paging']:
+                    next_sub_url = sub_comments['paging']['next']
+                    try:
+                        sub_comments = requests.get(next_sub_url, verify=False).json()
+                    except:
+                        break
+                    print('next!')
+
+                else:
+                    sub_comments = None # No more comments retrieved. Return.
 
 
             try: next_url = content['paging']['next']
             except Exception: next_url = ''
 
-        # print(comments)
-
-
-    return {'data':comments}
-
 
 def scrape_comments(posts, ACCESS_TOKEN):
 
-    comments = []
+    for idx,post_id in enumerate(posts):
+        post_id = post_id[0]
+        print('\nProcessing {} out of {} posts'.format(idx + 1, len(posts)))
 
-    for post_id in posts:
         URL = 'https://graph.facebook.com/v3.0/' + post_id +\
-             '?fields=comments.limit(100){id, created_time, message, like_count, comment_count, comments{id, created_time, message, like_count, comment_count}}' \
+             '?fields=comments.limit(100){id, created_time, message, like_count, comment_count, comments.limit(100){id, created_time, message, like_count, comment_count}}' \
              '&access_token='+ACCESS_TOKEN
 
-        comment_list = get_comments(post_id, URL)['data']
-        comments = comments + comment_list
-
-    return comments
+        get_comments(post_id, URL)
 
 if __name__ == '__main__':
 
-    json_file = 'abscbnNEWS_20180518_1006.json'
-
-    with open(json_file) as json_data:
-        data = json.load(json_data)
-
-    len(data)
-    data[5550]
-    id_set = [d['id'] for d in data]
+    post_ids = list(helper.get_posts(['post_id'], '*'))
 
     ACCESS_TOKEN = 'EAAcBQf4DCosBAFsxJiY9S3EsCFzE8CGG6XpZAgspaSn1gsIyykDgJfPTSvewTS7xJB0CfJuZA6Sc04udH8ZBuvct05h33uADUQM5O7FOeBIyVuqTTGZApOR8qFTmkH7LOc2CB1mV7MZBx29qpJq188BdZAiwyZCVaoZD'
 
-    comments = scrape_comments(id_set, ACCESS_TOKEN)
+    print(len(post_ids))
 
-    FILENAME = json_file.split('/')[1]
-
-    filename = 'comments_' + FILENAME
-
-    with open(filename, 'w') as outfile:
-        json.dump(comments, outfile)
+    comments = scrape_comments(post_ids, ACCESS_TOKEN)
