@@ -28,7 +28,7 @@ class Database:
 
         except Exception as e:
             print('Error encountered')
-            print(e)
+            print(query)
 
             # Ping to establish new conection
             self.conn.ping(True)
