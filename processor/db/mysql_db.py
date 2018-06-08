@@ -32,7 +32,7 @@ class Database:
 
             # Ping to establish new conection
             self.conn.ping(True)
-            self.insert_row(query, on_duplicate_keys)
+            # self.insert_row(query, on_duplicate_keys)
 
     def query_row(self, query):
        try:
