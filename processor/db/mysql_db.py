@@ -54,6 +54,8 @@ class Database:
            return results
 
        except Exception as e:
+
+           print(query)
            print('Error encountered')
            self.conn.ping(True)
            self.query_row(query)
