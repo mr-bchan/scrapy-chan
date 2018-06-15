@@ -1,0 +1,23 @@
+# Scrape comments from article ids - 100 comments at a time
+# 1. Comments are capped at 5,000 per article
+# 2. Sentiment analysis returns positive, negative, and neutral
+# 3. Sub-comments are not retrieved
+# 4. Comments are ranked when returned from Facebook
+
+import sys
+import comments_scraper as scraper
+import key_config as config
+import processor.db.helper as helper
+
+# Input:
+# facebook_page_name
+if __name__ == '__main__':
+    if len(sys.argv) > 1:
+        page = sys.argv[1]
+        print('Page name: {}'.format(page))
+
+        post_ids = list(helper.get_posts(['post_id'], '*', page))
+        scraper.scrape_comments(post_ids, config.ACCESS_TOKEN)
+
+    else:
+        print('Invalid arguments passed.')

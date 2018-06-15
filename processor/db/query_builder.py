@@ -1,5 +1,5 @@
 SELECT_ALL_FACEBOOK_POSTS = 'SELECT * FROM fb_posts;'
-SELECT_ALL_FACEBOOK_POSTS_FIELDS = "SELECT {} from fb_posts WHERE description REGEXP '[[:<:]]{}[[:>:]]' OR summary REGEXP '[[:<:]]{}[[:>:]]' ORDER BY timestamp DESC";
+SELECT_ALL_FACEBOOK_POSTS_FIELDS = "SELECT {} from fb_posts WHERE (description REGEXP '[[:<:]]{}[[:>:]]' OR summary REGEXP '[[:<:]]{}[[:>:]]') AND source REGEXP '[[:<:]]{}[[:>:]]' ORDER BY timestamp DESC";
 SELECT_ALL_FACEBOOK_COMMENTS = 'SELECT * FROM fb_comments;'
 
 

@@ -5,8 +5,7 @@
 
 # from bsoup import article_scraper as scraper
 import requests
-import json
-import datetime
+import key_config as config
 import data_sources
 import processor.db.helper as helper
 
@@ -97,8 +96,6 @@ def scrape_page(FACEBOOK_PAGE_ID, ACCESS_TOKEN):
     data = read_posts(URL, FACEBOOK_PAGE_ID)
     print(data)
 
-    import time
-
     articles = data['data']
     next_link = data['next']
 
@@ -106,13 +103,12 @@ def scrape_page(FACEBOOK_PAGE_ID, ACCESS_TOKEN):
         data = read_posts(next_link, FACEBOOK_PAGE_ID)
         articles = articles + data['data']
         next_link = data['next']
-        time.sleep(5)
+
 
 if __name__ == '__main__':
 
     facebook_page_ids = data_sources.FACEBOOK_PAGE_IDS
 
-    ACCESS_TOKEN =  'EAAcBQf4DCosBADNJDTHsUy3URx2kZBWb4Y0ftT2MZBHNLKPJxZC3Q0ZCfHW0wCR6dum1Fp3LufQK9ScBFN31tUCDTLORrOTXwOOKbHAtwSOzT6LZByZBvZAcarRwAJUGQCQ6VVvwktmLIL6e5vMd6FeZCtvGYRQSVpEZD'
 
     for id in facebook_page_ids:
-        scrape_page(id, ACCESS_TOKEN)
+        scrape_page(id, config.ACCESS_TOKEN)

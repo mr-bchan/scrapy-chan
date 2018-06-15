@@ -7,8 +7,8 @@ import json
 
 db = Database(db_config.DB_HOST, db_config.DB_USER, db_config.DB_PWD, db_config.DB_DB)
 
-def get_posts(fields, term=''):
-    return db.query_row(query_builder.SELECT_ALL_FACEBOOK_POSTS_FIELDS.format(','.join(fields), term, term))
+def get_posts(fields, term='*',source='*'):
+    return db.query_row(query_builder.SELECT_ALL_FACEBOOK_POSTS_FIELDS.format(','.join(fields), term, term, source))
 
 def get_sentiment(text):
     try:

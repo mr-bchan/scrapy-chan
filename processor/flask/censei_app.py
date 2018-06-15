@@ -7,10 +7,6 @@ import processor.db.helper as helper
 print('********************************')
 print('Setting up Flask API\n')
 
-
-
-
-
 collocation = Collocation(helper)
 
 app = Flask(__name__)
