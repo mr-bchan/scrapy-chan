@@ -45,7 +45,10 @@ def read_posts(url, source):
                        'link': post['link'],
                        'type': post['status_type'],
                        'likes' : post['like']['summary']['total_count'],
-                       'comments' : post['comments']['summary']['total_count']
+                       'comments' : post['comments']['summary']['total_count'],
+                       'full_picture': post['full_picture'],
+                       'thumb_picture': post['picture'],
+                       'permalink_url':post['permalink_url']
             }
         except Exception as e:
             continue
@@ -90,7 +93,7 @@ def read_posts(url, source):
 def scrape_page(FACEBOOK_PAGE_ID, ACCESS_TOKEN):
     URL = 'https://graph.facebook.com/v2.12/' + FACEBOOK_PAGE_ID +\
           '?fields=posts.limit(100)' \
-          '{id,created_time,message,attachments,link,permalink_url,shares,%20status_type,%20comments.limit(0).summary(true),reactions.type(LIKE).summary(total_count).as(like),reactions.type(LOVE).summary(total_count).as(love),reactions.type(HAHA).summary(total_count).as(haha),reactions.type(WOW).summary(total_count).as(wow),reactions.type(SAD).summary(total_count).as(sad),reactions.type(ANGRY).summary(total_count).as(angry)}&access_token=' + ACCESS_TOKEN + '&pretty=0;'
+          '{id,created_time,message,attachments,link,permalink_url,shares,%20status_type,%20comments.limit(0).summary(true),reactions.type(LIKE).summary(total_count).as(like),reactions.type(LOVE).summary(total_count).as(love),reactions.type(HAHA).summary(total_count).as(haha),reactions.type(WOW).summary(total_count).as(wow),reactions.type(SAD).summary(total_count).as(sad),reactions.type(ANGRY).summary(total_count).as(angry),full_picture,picture}&access_token=' + ACCESS_TOKEN + '&pretty=0;'
 
 
     data = read_posts(URL, FACEBOOK_PAGE_ID)

@@ -51,7 +51,11 @@ def insert_facebook_post(post):
             post['comments'],
             post['likes'],
             post['shares'],
-            post['timestamp']
+            post['timestamp'],
+            post['full_picture'],
+            post['thumb_picture'],
+            post['permalink_url']
+
         ])
     except UnicodeEncodeError:
         print('Error encountered while inserting row (Unicode)')

@@ -64,7 +64,7 @@ class Database:
     def insert_facebook_post(self, row):
 
         print(row)
-        keys = ['type','title','summary','description','source','tags','link','comments','likes','shares','timestamp']
+        keys = ['type','title','summary','description','source','tags','link','comments','likes','shares','timestamp', 'full_picture', 'thumb_picture', "permalink_url"]
 
         post_id = row[0]
         type = row[1]
@@ -81,9 +81,12 @@ class Database:
         # Timestamp needs to be converted to a format
         timestamp = row[10].replace('T', ' ')[:-5]
 
+        full_picture = row[11]
+        thumb_picture = row[12]
+        permalink_url = row[13]
+
         #print(formatted_timestamp)
-        query = 'INSERT INTO {} VALUES ("{}", "{}", "{}", "{}", "{}","{}","{}","{}",{},{},{},"{}")'\
-            .format (self.FB_POST_TABLE, post_id, type, title, summary, description, source, tags, link, comments, likes, shares, timestamp)
+        query = 'INSERT INTO {} VALUES ("{}", "{}", "{}", "{}", "{}","{}","{}","{}",{},{},{},"{}","{}","{}","{}")'.format (self.FB_POST_TABLE, post_id, type, title, summary, description, source, tags, link, comments, likes, shares, timestamp, full_picture, thumb_picture, permalink_url)
 
         self.insert_row(query=query, on_duplicate_keys=self.create_on_duplicate_query(keys))
 
