@@ -64,7 +64,7 @@ class Database:
     def insert_facebook_post(self, row):
 
         print(row)
-        keys = ['type','title','summary','description','source','tags','link','comments','likes','shares','timestamp', 'full_picture', 'thumb_picture', "permalink_url"]
+        keys = ['type','title','summary','description','source','tags','link','comments','likes','shares','timestamp', 'full_picture', 'thumb_picture', "permalink_url", "love", "haha", "sad", "wow", "angry"]
 
         post_id = row[0]
         type = row[1]
