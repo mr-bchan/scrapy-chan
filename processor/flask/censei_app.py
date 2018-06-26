@@ -1,9 +1,13 @@
+
+
 from flask import Flask, flash, jsonify, request, render_template, make_response
 from flask_cors import CORS
 import config
+import processor.nlp.nlp_helper as nlp_helper
 from processor.nlp.collocation import Collocation
 import processor.db.helper as helper
-
+import traceback
+from collections import Counter
 print('********************************')
 print('Setting up Flask API\n')
 
@@ -11,6 +15,88 @@ collocation = Collocation(helper)
 
 app = Flask(__name__)
 CORS(app)
+
+@app.route('/posts/summary', methods=['GET'])
+def get_posts_summary():
+
+    try:
+        text = request.args.get("q")
+        from_date = request.args.get("from")
+        to_date = request.args.get("to")
+        source = request.args.get("source")
+
+        outputs = {}
+        outputs['summary'] = helper.get_posts_summary(text, from_date, to_date)
+
+        response = jsonify({'success': True, 'data': outputs})
+        print(response)
+        return response
+
+    except Exception as e:
+        print('Error encountered.')
+        print(e)
+
+        traceback.print_exc()
+        response = jsonify({'success': False, 'error': str(e)})
+        response.headers.add('Access-Control-Allow-Origin', '*')
+
+    return response
+
+@app.route('/posts/wordcloud', methods=['GET'])
+def get_posts_wordcloud():
+
+    try:
+        text = request.args.get("q")
+        from_date = request.args.get("from")
+        to_date = request.args.get("to")
+        source = request.args.get("source")
+
+
+        outputs = helper.get_posts_summary(text, from_date, to_date)
+        documents = [x[3] for x in outputs][1:1000]
+        tokens = Counter(nlp_helper.tokenize(documents))
+        tokens = tokens.most_common(100)
+        print(tokens)
+
+        response = jsonify({'success': True, 'data': tokens})
+        print(response)
+        return response
+
+    except Exception as e:
+        print('Error encountered.')
+        print(e)
+
+        traceback.print_exc()
+        response = jsonify({'success': False, 'error': str(e)})
+        response.headers.add('Access-Control-Allow-Origin', '*')
+
+    return response
+
+@app.route('/comments/summary', methods=['GET'])
+def get_comments_summary():
+
+    try:
+        text = request.args.get("q")
+        # from_date = request.args.get("from")
+        # to_date = request.args.get("to")
+        # source = request.args.get("source")
+
+        outputs = {}
+        outputs['summary'] = helper.get_comments_summary(text)
+
+        response = jsonify({'success': True, 'data': outputs})
+        print(response)
+        return response
+
+    except Exception as e:
+        print('Error encountered.')
+        print(e)
+
+        traceback.print_exc()
+        response = jsonify({'success': False, 'error': str(e)})
+        response.headers.add('Access-Control-Allow-Origin', '*')
+
+    return response
 
 @app.route("/nlp/link/",methods=['GET'])
 def get_word_links():
@@ -33,9 +119,9 @@ def get_word_links():
         print('Error encountered.')
         print(e)
 
+        traceback.print_exc()
         response = jsonify({'success': False, 'error': str(e)})
         response.headers.add('Access-Control-Allow-Origin', '*')
-
     return response
 
 @app.route("/timeseries/posts/",methods=['GET'])
@@ -83,6 +169,8 @@ def get_post_counts():
     except Exception as e:
         print('Error encountered.')
         print(e)
+
+        traceback.print_exc()
 
         response = jsonify({'success': False, 'error': str(e)})
         response.headers.add('Access-Control-Allow-Origin', '*')
@@ -137,6 +225,8 @@ def get_comments_counts():
         print('Error encountered.')
         print(e)
 
+        traceback.print_exc()
+
         response = jsonify({'success': False, 'error': str(e)})
         response.headers.add('Access-Control-Allow-Origin', '*')
 
@@ -144,4 +234,6 @@ def get_comments_counts():
 
 
 if __name__ == "__main__":
+
+
     app.run(config.HOST,config.PORT)

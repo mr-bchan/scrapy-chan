@@ -85,8 +85,15 @@ class Database:
         thumb_picture = row[12]
         permalink_url = row[13]
 
+        # Facebook reactions
+        love = row[14]
+        haha = row[15]
+        wow = row[16]
+        sad = row[17]
+        angry = row[18]
+
         #print(formatted_timestamp)
-        query = 'INSERT INTO {} VALUES ("{}", "{}", "{}", "{}", "{}","{}","{}","{}",{},{},{},"{}","{}","{}","{}")'.format (self.FB_POST_TABLE, post_id, type, title, summary, description, source, tags, link, comments, likes, shares, timestamp, full_picture, thumb_picture, permalink_url)
+        query = 'INSERT INTO {} VALUES ("{}", "{}", "{}", "{}", "{}","{}","{}","{}",{},{},{},"{}","{}","{}","{}",{},{},{},{},{})'.format (self.FB_POST_TABLE, post_id, type, title, summary, description, source, tags, link, comments, likes, shares, timestamp, full_picture, thumb_picture, permalink_url, love, haha, wow, sad, angry)
 
         self.insert_row(query=query, on_duplicate_keys=self.create_on_duplicate_query(keys))
 

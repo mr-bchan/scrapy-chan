@@ -54,7 +54,12 @@ def insert_facebook_post(post):
             post['timestamp'],
             post['full_picture'],
             post['thumb_picture'],
-            post['permalink_url']
+            post['permalink_url'],
+            post['love'],
+            post['haha'],
+            post['wow'],
+            post['sad'],
+            post['angry']
 
         ])
     except UnicodeEncodeError:
@@ -103,6 +108,15 @@ def get_comments_time_aggregated(text):
     result = list(db.query_row(query))
     return result
 
+def get_posts_summary(text, from_date, to_date):
+    query = query_builder.SELECT_FACEBOOK_POSTS_SUMMARY.format(text, text, from_date, to_date)
+    result = list(db.query_row(query))
+    return result
+
+def get_comments_summary(text):
+    query = query_builder.SELECT_FACEBOOK_COMMENTS_SUMMARY.format(text)
+    result = list(db.query_row(query))
+    return result
 if __name__ == '__main__':
 
     folder = '../../results'

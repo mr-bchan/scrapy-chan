@@ -36,8 +36,10 @@ def read_posts(url, source):
     for post in posts:
 
         try:
-            if post['created_time'][:4] != '2018':
-                return {'data': data, 'next': ''}
+            #if post['created_time'][:4] != '2018':
+            #    return {'data': data, 'next': ''}
+
+            print(post)
 
             article = {'id': post['id'],
                        'timestamp': post['created_time'],
@@ -48,7 +50,12 @@ def read_posts(url, source):
                        'comments' : post['comments']['summary']['total_count'],
                        'full_picture': post['full_picture'],
                        'thumb_picture': post['picture'],
-                       'permalink_url':post['permalink_url']
+                       'permalink_url':post['permalink_url'],
+                        'love':post['love']['summary']['total_count'],
+                        'haha':post['haha']['summary']['total_count'],
+                        'wow' :post['wow']['summary']['total_count'],
+                        'sad' :post['sad']['summary']['total_count'],
+                        'angry':post['angry']['summary']['total_count']
             }
         except Exception as e:
             continue

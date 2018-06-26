@@ -14,7 +14,7 @@ class Collocation():
 
         # Get all posts
         posts = db_helper.get_posts(['summary'], '*')
-        posts = ["{}".format(x[0]) for x in posts]
+        posts = ["{}".format(x[0]) for x in posts[1:3000]]
 
         # Tokenize documents
         tokens = []

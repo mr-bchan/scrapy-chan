@@ -1,5 +1,12 @@
 SELECT_ALL_FACEBOOK_POSTS = 'SELECT * FROM fb_posts;'
+
 SELECT_ALL_FACEBOOK_POSTS_FIELDS = "SELECT {} from fb_posts WHERE (description REGEXP '[[:<:]]{}[[:>:]]' OR summary REGEXP '[[:<:]]{}[[:>:]]') AND source REGEXP '[[:<:]]{}[[:>:]]' ORDER BY timestamp DESC";
+
+SELECT_FACEBOOK_POSTS_SUMMARY = "SELECT * FROM FB_POSTS WHERE (description REGEXP '[[:<:]]{}[[:>:]]' OR summary REGEXP '[[:<:]]{}[[:>:]]') AND TIMESTAMP >= '{}' AND TIMESTAMP <= '{}' ORDER BY COMMENTS DESC"
+
+
+SELECT_FACEBOOK_COMMENTS_SUMMARY = "SELECT a.timestamp, b.source, b.thumb_picture, a.message, a.polarity, a.sentiment, a.likes, a.comments, b.permalink_url from fb_comments a join fb_posts b on a.post_id = b.post_id WHERE message REGEXP '[[:<:]]{}[[:>:]]' ORDER BY a.comments desc limit 5000;"
+
 SELECT_ALL_FACEBOOK_COMMENTS = 'SELECT * FROM fb_comments;'
 
 
