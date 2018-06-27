@@ -118,8 +118,8 @@ def get_comments_summary(text):
     result = list(db.query_row(query))
     return result
 
-def get_post_ids_prev_month():
-    query = query_builder.SELECT_POST_IDS_PREV_MONTH
+def get_post_ids_prev_month(day_interval=30):
+    query = query_builder.SELECT_POST_IDS_PREV_MONTH.format(day_interval)
     result = list(db.query_row(query))
     return result
 
