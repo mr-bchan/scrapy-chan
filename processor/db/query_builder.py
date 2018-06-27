@@ -20,7 +20,7 @@ SELECT_TIME_AGGREGATED_FACEBOOK_POSTS = "SELECT YEAR(timestamp), MONTH(timestamp
 
 SELECT_TIME_AGGREGATED_FACEBOOK_COMMENTS = "SELECT YEAR(timestamp), MONTH(timestamp), DAY(timestamp), sentiment, count(*) AS COUNT FROM fb_comments  WHERE sentiment is not null and message like '%{}%' GROUP BY YEAR(timestamp), MONTH(timestamp), DAY(timestamp),sentiment"
 
-
+SELECT_POST_IDS_PREV_MONTH = 'SELECT post_id from fb_posts where timestamp >= (SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 30 day), "%Y-%m-%d")) ORDER BY timestamp DESC;'
 
 def select_query_facebook_posts(term):
     return SELECT_QUERY_FACEBOOK_POSTS.format(term,term)

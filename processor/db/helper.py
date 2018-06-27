@@ -117,6 +117,12 @@ def get_comments_summary(text):
     query = query_builder.SELECT_FACEBOOK_COMMENTS_SUMMARY.format(text)
     result = list(db.query_row(query))
     return result
+
+def get_post_ids_prev_month():
+    query = query_builder.SELECT_POST_IDS_PREV_MONTH
+    result = list(db.query_row(query))
+    return result
+
 if __name__ == '__main__':
 
     folder = '../../results'
