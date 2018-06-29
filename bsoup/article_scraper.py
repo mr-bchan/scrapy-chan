@@ -55,7 +55,6 @@ def read_article_list(URL):
         return output_articles
 
 def read_article(URL):
-
     try:
 
         output = {}
@@ -88,8 +87,6 @@ def read_article(URL):
         output['text'] = ""
         output['media'] = []
         output['tags'] = []
-
-
     return output
 
 # Helper function to remove unnecessary unicode strings

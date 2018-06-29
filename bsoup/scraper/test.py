@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(0, '.')
+
 import bsoup.scraper.abscbn as abscbn_scraper
 import processor.db.helper as helper
 import json
