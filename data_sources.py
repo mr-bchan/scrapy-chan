@@ -13,5 +13,6 @@ FACEBOOK_PAGE_IDS = [
     'themanilatimesonline',
     'fxtradingphilippines',
     'BangkoSentralngPilipinas',
-    'pcoogov'
+    'pcoogov',
+    'PTVph'
 ]

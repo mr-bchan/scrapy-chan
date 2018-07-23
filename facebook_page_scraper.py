@@ -36,8 +36,9 @@ def read_posts(url, source):
     for post in posts:
 
         try:
-            #if post['created_time'][:4] != '2018':
-            #    return {'data': data, 'next': ''}
+ 	    print('Created time: {}'.format(post['created_time']))
+            if post['created_time'][:4] != '2018':
+            	return {'data': data, 'next': ''}
 
             print(post)
 
