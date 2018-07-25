@@ -33,8 +33,8 @@ def parse_body(content, URL):
         return output
 
     output['title'] = title.getText()
-    output['videos'] = [tag['src'] for tag in content.findAll('iframe')]
-    output['images'] = [tag['src'] for tag in content.findAll('img')]
+    output['videos'] = [tag['src'] for tag in content.findAll('iframe') if 'src' in tag]
+    output['images'] = [tag['src'] for tag in content.findAll('img') if 'src' in tag]
     output['tags'] = [encode(tag.getText()) for tag in tags.findAll('a')]
     output['text'] = encode(content.getText())
     output['url'] = URL
