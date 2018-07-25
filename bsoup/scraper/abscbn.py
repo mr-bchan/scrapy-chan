@@ -2,38 +2,44 @@ import requests
 from bs4 import BeautifulSoup
 import unicodedata
 
+"""
+Input: URL
+"""
 def scrape(URL):
-    try:
-        output = {}
-        print('Getting story for {}'.format(URL))
+    print('Getting story for {}'.format(URL))
+    page = requests.get(URL, verify=False)
+    output = parse_body(page.content, URL)
+    return output
 
-        page = requests.get(URL, verify=False)
-        soup = BeautifulSoup(page.content, 'html.parser')
 
-        content = soup.find('div', {'class':'article-content', 'itemprop':'articleBody'})
-        tags = soup.find('div', {'class':'article-metakey'})
-        output['tags'] = [encode(tag.getText()) for tag in tags.findAll('a')]
+def parse_body(content, URL):
+    soup = BeautifulSoup(content, 'html.parser')
+    print('URL: {}'.format(URL))
+    output = {}
 
-        if content is None:
-            content = soup.find('div', {'class':'slider-for'})
+    tags = soup.find('div', {'class':'article-metakey'})
+    timestamp = soup.find('span', {'class':'date-posted'})
+    title = soup.find('h1', {'class': 'news-title'})
 
-        if content is None:
-            content = soup.find('div', {'class':'media-block'})
+    content = soup.find('div', {'class':'article-content', 'itemprop':'articleBody'})
 
-        output['videos'] = [tag['src'] for tag in content.findAll('iframe')]
-        output['images'] = [tag['src'] for tag in content.findAll('img')]
-        output['media'] = [tag['data-instgrm-permalink'] for tag in content.findAll('blockquote', {'class':'instagram-media'})]
+    if content is None:
+        content = soup.find('div', {'class':'slider-for'})
 
-        output['text'] = encode(content.getText())
-        output['url'] = URL
+    if content is None:
+        content = soup.find('div', {'class':'media-block'})
 
-    except Exception as e:
-        print(e)
-        output['videos'] = []
-        output['images'] = []
-        output['text'] = ""
-        output['media'] = []
-        output['tags'] = []
+    if content is None:
+        return output
+
+    output['title'] = title.getText()
+    output['videos'] = [tag['src'] for tag in content.findAll('iframe')]
+    output['images'] = [tag['src'] for tag in content.findAll('img')]
+    output['tags'] = [encode(tag.getText()) for tag in tags.findAll('a')]
+    output['text'] = encode(content.getText())
+    output['url'] = URL
+    output['timestamp'] = timestamp.getText()
+
     return output
 
 # Helper function to remove unnecessary unicode strings
