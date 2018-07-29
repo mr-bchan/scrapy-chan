@@ -32,7 +32,7 @@ def parse_body(content, URL):
     output['images'] = [tag['data-original'] for tag in content.findAll('img')]
     output['tags'] = [encode(tag.getText()) for tag in tags.findAll('a')]
     output['text'] = encode(text)
-    output['url'] = URL
+    output['url'] = encode(URL)
     output['timestamp'] = timestamp.getText().replace('Published ', '').strip()
 
     return output
