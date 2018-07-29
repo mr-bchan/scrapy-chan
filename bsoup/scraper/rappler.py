@@ -17,28 +17,23 @@ def parse_body(content, URL):
     print('URL: {}'.format(URL))
     output = {}
 
-    tags = soup.find('div', {'class':'article-metakey'})
-    timestamp = soup.find('span', {'class':'date-posted'})
-    title = soup.find('h1', {'class': 'news-title'})
+    tags = soup.find('div', {'class':'rappler3-metakey'})
+    timestamp = soup.find('div', {'class':'published'})
+    title = soup.find('h1', {'class': 'select-headline'})
 
-    content = soup.find('div', {'class':'article-content', 'itemprop':'articleBody'})
-
-    if content is None:
-        content = soup.find('div', {'class':'slider-for'})
-
-    if content is None:
-        content = soup.find('div', {'class':'media-block'})
-
-    if content is None:
+    content = soup.find('div', {'class':'story-area cXenseParse'})
+    if content is not None:
+        text = ' '.join([t.getText() for t in content.findAll('p')])
+    else:
         return output
 
     output['title'] = title.getText()
     output['videos'] = [tag['src'] for tag in content.findAll('iframe')]
-    output['images'] = [tag['src'] for tag in content.findAll('img')]
+    output['images'] = [tag['data-original'] for tag in content.findAll('img')]
     output['tags'] = [encode(tag.getText()) for tag in tags.findAll('a')]
-    output['text'] = encode(content.getText())
+    output['text'] = encode(text)
     output['url'] = URL
-    output['timestamp'] = timestamp.getText()
+    output['timestamp'] = timestamp.getText().replace('Published ', '').strip()
 
     return output
 

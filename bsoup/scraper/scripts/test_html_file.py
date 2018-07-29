@@ -2,7 +2,7 @@ import sys
 sys.path.insert(0,'.')
 
 import os
-import bsoup.scraper.abscbn as scraper
+import bsoup.scraper.rappler as scraper
 import bsoup.scraper.scripts.db_helper as db_helper
 # Input folder name
 
@@ -22,8 +22,10 @@ for idx,file in enumerate(input_html_files):
 
         if output != {}:
             print("{} of {} file scraped".format(idx, len(input_html_files)))
-            print(output)
+
+            if output['images'] != []:
+                print(output)
 
             # save to mongodb
-            db = db_helper.init_db()
+            db = db_helper.init_db('censei')
             db_helper.insert_row(db['scraped_links'], output)
